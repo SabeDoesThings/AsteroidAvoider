@@ -4,11 +4,11 @@ import h2d.Scene;
 
 class MainMenu extends Scene {
     var mainMenuText: Text;
-    var font = DefaultFont.get();
 
     public function new() {
         super();
 
+        var font = DefaultFont.get();
         this.addChild(Game.background1);
         mainMenuText = new Text(font, this);
         mainMenuText.text = "Asteroid Avoider\n\nPress 'SPACE' to start";

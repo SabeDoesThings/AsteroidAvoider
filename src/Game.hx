@@ -1,3 +1,5 @@
+import hxd.res.Sound;
+import hxd.App;
 import haxe.Timer;
 import h2d.Scene;
 import hxd.Key;
@@ -7,7 +9,7 @@ import ent.Background;
 import hxd.Res;
 import ent.Player;
 
-class Game extends hxd.App {
+class Game extends App {
     private var player: Player;
     private var background2: Background;
     private var asteroid: Asteroid;
@@ -24,7 +26,8 @@ class Game extends hxd.App {
     var playerRadius: Float = 50;
     var defaultPlayerPosX: Float = 50;
     var defaultPlayerPosY: Float = 50;
-    var deathTimer = new Timer(2000);
+    var gameBgMusic: Sound = null;
+    var menuBgMusic: Sound = null;
 
     override function init() {
         //load contents
@@ -40,11 +43,16 @@ class Game extends hxd.App {
 
         gameScene = s2d;
 
-        mainMenu = new MainMenu();
+        if (Sound.supportedFormat(OggVorbis)) {
+            gameBgMusic = Res.bg_music;
+        }
+        if (gameBgMusic != null) {
+            gameBgMusic.play(true);
+        }
 
-        //draw
-        s2d.addChild(background1);
-        s2d.addChild(background2);
+        Background.speed = 0;
+        mainMenu = new MainMenu();
+        mainMenu.addChildAt(background1, 0);
 
         setScene2D(mainMenu);
     }
@@ -55,6 +63,8 @@ class Game extends hxd.App {
 
             Background.speed = 300;
 
+            s2d.addChild(background1);
+            s2d.addChild(background2);
             s2d.addChild(player);
             s2d.addChild(asteroid);
     
@@ -94,10 +104,13 @@ class Game extends hxd.App {
 
             s2d.removeChild(player);
 
-            deathTimer.run();
-            deathTimer.stop();
-
             setScene2D(mainMenu);
+            Background.speed = 0;
+            background1.x = 0;
+            background1.y = 0;
+            background2.x = Background.bgWidth;
+            background2.y = 0;
+            mainMenu.addChildAt(background1, 0);
         }
     }
 }
